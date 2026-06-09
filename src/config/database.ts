@@ -9,6 +9,8 @@ const {
   DB_NAME = "github_analyzer",
 } = process.env;
 
+console.log("DB_NAME =", JSON.stringify(DB_NAME)); // ADD THIS LINE
+
 export const pool = mysql.createPool({
   host: DB_HOST,
   port: Number(DB_PORT),
