@@ -16,7 +16,7 @@ export const pool = mysql.createPool({
   port: Number(DB_PORT),
   user: DB_USER,
   password: DB_PASSWORD,
-  database: DB_NAME?.trim(), // <-- changed here
+  database: DB_NAME?.trim(),
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -24,14 +24,6 @@ export const pool = mysql.createPool({
 
 export async function testConnection(): Promise<void> {
   try {
-    const conn = await pool.getConnection();
-    conn.release();
-    logger.info("MySQL connection established");
-  } catch (err) {
-    logger.error({ err }, "Failed to connect to MySQL");
-    throw err;
-  }
-}
     const conn = await pool.getConnection();
     conn.release();
     logger.info("MySQL connection established");
