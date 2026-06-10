@@ -22,14 +22,16 @@ export async function createProfile(input: CreateProfileInput): Promise<Profile>
     "SELECT id FROM profiles WHERE username = ?",
     [input.username],
   );
+
   if (existing.length > 0) {
     throw new DuplicateProfileError(input.username);
   }
 
   const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO profiles
-       (username, name, followers, following, public_repos, company, location, bio, profile_url, account_created_at, account_age_years)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (id, username, name, followers, following, public_repos, company, location, bio, profile_url, account_created_at, account_age_years)
+     VALUES
+      (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       input.username,
       input.name,
@@ -88,5 +90,6 @@ export async function getProfileById(id: number): Promise<Profile | null> {
     "SELECT * FROM profiles WHERE id = ?",
     [id],
   );
+
   return rows.length > 0 ? (rows[0] as Profile) : null;
 }
