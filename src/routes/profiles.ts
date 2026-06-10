@@ -7,7 +7,7 @@ import {
 
 const router = Router();
 
-router.post("/analyze/:username", analyzeProfile);
+router.get("/analyze/:username", analyzeProfile);
 router.get("/profiles", listProfiles);
 router.get("/profiles/:id", getProfile);
 
