@@ -30,7 +30,7 @@ export async function analyzeProfile(req: Request, res: Response): Promise<void>
       location: ghUser.location,
       bio: ghUser.bio,
       profile_url: ghUser.html_url,
-      account_created_at: ghUser.created_at,
+      account_created_at: ghUser.created_at.replace("T", " ").replace("Z", ""),
       account_age_years: computeAccountAgeYears(ghUser.created_at),
     });
 
