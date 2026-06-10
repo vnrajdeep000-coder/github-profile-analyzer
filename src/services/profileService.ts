@@ -27,25 +27,32 @@ export async function createProfile(input: CreateProfileInput): Promise<Profile>
     throw new DuplicateProfileError(input.username);
   }
 
-  const [result] = await pool.query<ResultSetHeader>(
-    `INSERT INTO profiles
-      (id, username, name, followers, following, public_repos, company, location, bio, profile_url, account_created_at, account_age_years)
-     VALUES
-      (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [
-      input.username,
-      input.name,
-      input.followers,
-      input.following,
-      input.public_repos,
-      input.company,
-      input.location,
-      input.bio,
-      input.profile_url,
-      input.account_created_at,
-      input.account_age_years,
-    ],
-  );
+const [[row]] = await pool.query<RowDataPacket[]>(
+  "SELECT COALESCE(MAX(id), 0) + 1 AS nextId FROM profiles"
+);
+
+const nextId = Number((row as any).nextId);
+
+const [result] = await pool.query<ResultSetHeader>(
+  `INSERT INTO profiles
+    (id, username, name, followers, following, public_repos, company, location, bio, profile_url, account_created_at, account_age_years)
+   VALUES
+    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  [
+    nextId,
+    input.username,
+    input.name,
+    input.followers,
+    input.following,
+    input.public_repos,
+    input.company,
+    input.location,
+    input.bio,
+    input.profile_url,
+    input.account_created_at,
+    input.account_age_years,
+  ],
+);
 
   return getProfileById(result.insertId) as Promise<Profile>;
 }
